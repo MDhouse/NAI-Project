@@ -83,6 +83,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -92,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConvertToHsv.cs" />
+    <Compile Include="DetectionImage.cs" />
     <Compile Include="IConvertColor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
