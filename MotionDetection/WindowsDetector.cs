@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace MotionDetection
 {
-    public partial class Form1 : Form
+    public partial class WindowsDetector : Form
     {
-        public Form1()
+        public WindowsDetector()
         {
             InitializeComponent();
         }

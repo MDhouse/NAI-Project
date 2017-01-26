@@ -1,6 +1,9 @@
 ﻿namespace MotionDetection
 {
-    partial class Form1
+    using System.Drawing;
+    using System.Windows.Forms;
+
+    partial class WindowsDetector
     {
         /// <summary>
         /// Required designer variable.
@@ -20,6 +23,8 @@
             base.Dispose(disposing);
         }
 
+        private SplitContainer _container;
+
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -29,8 +34,18 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            this._container = new SplitContainer();
+
+            this._container.Panel1.SuspendLayout();
+            this._container.Panel2.SuspendLayout();
+            this._container.SuspendLayout();
+
+
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "Form1";
+            this.ClientSize = new Size(1280, 640);
+            this.Name = "Windows Detection";
+            this.Text = "Windows Detection";
         }
 
         #endregion
