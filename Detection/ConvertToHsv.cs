@@ -5,8 +5,21 @@
     using Emgu.CV;
     using Emgu.CV.Structure;
 
+    /// <summary>
+    /// The convert to hsv.
+    /// </summary>
     public class ConvertToHsv : IConvertColor
     {
+        /// <summary>
+        /// Gets or sets the current hsv image.
+        /// </summary>
+        private Image<Hsv, byte> ConvertImageToHsvImage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the skin image.
+        /// </summary>
+        private Image<Gray, byte> CurrentImage { get; set; }
+
         /// <summary>
         /// The detect image.
         /// </summary>
@@ -22,12 +35,12 @@
         /// <returns>
         /// The <see cref="Image"/>.
         /// </returns>
-        internal override Image<Gray, byte> DetectImage(Image<Bgr, byte> image, IColor minColor, IColor maxColor)
+        public Image<Gray, byte> DetectImage(Image<Bgr, byte> image, IColor minColor, IColor maxColor)
         {
-            var imageConvertToHsv = image.Convert<Hsv, byte>();
-            var imageDetection = imageConvertToHsv.InRange((Hsv)minColor, (Hsv)maxColor);
+            this.ConvertImageToHsvImage = image.Convert<Hsv, byte>();
+            this.CurrentImage = this.ConvertImageToHsvImage.InRange((Hsv)minColor, (Hsv)maxColor);
 
-            return imageDetection;
+            return this.CurrentImage;
         }
     }
 }

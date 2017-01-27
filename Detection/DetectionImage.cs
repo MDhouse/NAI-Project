@@ -19,60 +19,86 @@ namespace Detection
     using Emgu.CV.Structure;
     using Emgu.CV.Util;
 
-    using static Emgu.CV.CvInvoke;
-
     class DetectionImage:IConvertColor
     {
-        internal override Image<Gray, byte> DetectImage(Image<Bgr, byte> image, IColor minColor, IColor maxColor)
+        private byte[,,] yccBytes;
+        private byte[,,] grayBytes;
+
+        /// <summary>
+        /// Gets or sets the convert image to ycc image.
+        /// </summary>
+        private Image<Ycc, byte> ConvertImageToYccImage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the current detection image.
+        /// </summary>
+        private Image<Gray, byte> CurrentDetectionImage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the structur mat.
+        /// </summary>
+        private Mat StructurMat { get; set; }
+
+        public Image<Gray, byte> DetectImage(Image<Bgr, byte> image, IColor minColor, IColor maxColor)
         {
-            Image<Ycc, Byte> currentImage = image.Convert<Ycc, Byte>();
-            Image<Gray, Byte> imageDetection = new Image<Gray, byte>(image.Width, image.Height);
+            this.ConvertImageToYccImage = image.Convert<Ycc, byte>();
+            this.CurrentDetectionImage = new Image<Gray, byte>(image.Width, image.Height);
+
+            this.Rows = image.Rows;
+            this.Cols = image.Cols;
+                
+            this.yccBytes = this.ConvertImageToYccImage.Data;
+            this.grayBytes = this.CurrentDetectionImage.Data;
 
             int y, cr, cb, x1, y1, value;
 
-            var rows = image.Rows;
-            var cols = image.Cols;
 
-            Byte[,,] yccBytes = currentImage.Data;
-            Byte[,,] imageDetectionBytes = imageDetection.Data;
-
-            for (var i = 0; i < rows; i++)
+            for (var i = 0; i < this.Rows; i++)
             {
-                for (var j = 0; j < cols; j++)
+                for (var j = 0; j < this.Cols; j++)
                 {
-                    y = yccBytes[i, j, 0];
-                    cr = yccBytes[i, j, 1];
-                    cb = yccBytes[i, j, 2];
+                    int first = this.yccBytes[i, j, 0];
+                    int second = this.yccBytes[i, j, 1];
+                    int third = this.yccBytes[i, j, 2];
 
-                    cb -= 109;
-                    cr -= 152;
+                    third = third - 109;
+                    second = second - 152;
 
-                    x1 = (819 * cr - 614 * cb) / 32 + 51;
-                    y1 = (819 * cr - 614 * cb) / 32 + 77;
+                    int firstHalf = (819 * second - 614 * third) / 32 + 51;
+                    int secondHalf = (819 * second - 614 * third) / 32 + 77;
 
-                    x1 *= 41 / 1024;
-                    y1 *= 73 / 1024;
-                    value = x1 * x1 + y1 * y1;
+                    firstHalf *= 41 / 1024;
+                    secondHalf *= 73 / 1024;
 
-                    if (y < 100)
+                    int result = firstHalf * firstHalf + secondHalf * secondHalf;
+
+                    if (first < 100)
                     {
-                        imageDetectionBytes[i, j, 0] = (value < 700) ? (byte)255 : (byte)0;
+                        this.grayBytes[i, j, 0] = (result < 700) ? (byte)255 : (byte)0;
                     }
                     else
                     {
-                        imageDetectionBytes[i, j, 0] = (value < 850) ? (byte)255 : (byte)0;
+                        this.grayBytes[i, j, 0] = (result < 850) ? (byte)255 : (byte)0;
                     }
                 }
-
-
             }
 
-            var mat = GetStructuringElement(Emgu.CV.CvEnum.ElementShape.Cross, new Size(3, 3), new Point(1, 1));
+            this.StructurMat = CvInvoke.GetStructuringElement(Emgu.CV.CvEnum.ElementShape.Cross, new Size(6, 6), new Point(3, 3));
 
-            Erode(imageDetection, imageDetection, mat, new Point(6, 6),  1, BorderType.Wrap, MorphologyDefaultBorderValue);
-            Dilate(imageDetection, imageDetection, mat, new Point(3, 3), 2, BorderType.Wrap, MorphologyDefaultBorderValue);
+            CvInvoke.Erode(this.CurrentDetectionImage, this.CurrentDetectionImage, this.StructurMat, new Point(1, 1),  1, BorderType.Wrap, CvInvoke.MorphologyDefaultBorderValue);
+            CvInvoke.Dilate(this.CurrentDetectionImage, this.CurrentDetectionImage, this.StructurMat, new Point(1, 1), 2, BorderType.Wrap, CvInvoke.MorphologyDefaultBorderValue);
 
-            return imageDetection;
+            return this.CurrentDetectionImage;
         }
+
+        /// <summary>
+        /// Gets or sets the cols.
+        /// </summary>
+        private int Cols { get; set; }
+
+        /// <summary>
+        /// Gets or sets the rows.
+        /// </summary>
+        private int Rows { get; set; }
     }
 }

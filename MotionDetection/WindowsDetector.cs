@@ -73,6 +73,11 @@ namespace MotionDetection
         public int FrameHeight { get; set; }
 
         /// <summary>
+        /// Gets or sets the box rect.
+        /// </summary>
+        public RotatedRect BoxRect { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="WindowsDetector"/> class.
         /// </summary>
         public WindowsDetector()
@@ -88,6 +93,8 @@ namespace MotionDetection
             this.MaxHsv = new Hsv(20, 255, 255);
             this.MinYcc = new Ycc(0, 131, 80);
             this.MaxYcc = new Ycc(255, 185, 135);
+
+            this.BoxRect = new RotatedRect();
 
             Application.Idle += new EventHandler(this.FrameCapture);
         }
@@ -110,5 +117,7 @@ namespace MotionDetection
                 this._imageBox.Image = this.CurrentImage;
             }
         }
+
+
     }
 }

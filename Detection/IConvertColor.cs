@@ -13,8 +13,23 @@ namespace Detection
     /// <summary>
     /// The convert color.
     /// </summary>
-    public abstract class IConvertColor
+    public interface IConvertColor
     {
-        internal abstract Image<Gray, byte> DetectImage(Image<Bgr, byte> image, IColor minColor, IColor maxColor);
+        /// <summary>
+        /// The detect image.
+        /// </summary>
+        /// <param name="image">
+        /// The image.
+        /// </param>
+        /// <param name="minColor">
+        /// The min color.
+        /// </param>
+        /// <param name="maxColor">
+        /// The max color.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Image"/>.
+        /// </returns>
+        Image<Gray, byte> DetectImage(Image<Bgr, byte> image, IColor minColor, IColor maxColor);
     }
 }

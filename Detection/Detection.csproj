@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConvertToHsv.cs" />
+    <Compile Include="ConvertToYcc.cs" />
     <Compile Include="DetectionImage.cs" />
     <Compile Include="IConvertColor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
