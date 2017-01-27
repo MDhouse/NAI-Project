@@ -28,7 +28,7 @@ namespace Detection
             Image<Ycc, Byte> currentImage = image.Convert<Ycc, Byte>();
             Image<Gray, Byte> imageDetection = new Image<Gray, byte>(image.Width, image.Height);
 
-            int y, cr, cb, l, x1, y1, value;
+            int y, cr, cb, x1, y1, value;
 
             var rows = image.Rows;
             var cols = image.Cols;

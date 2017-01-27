@@ -19,9 +19,11 @@ namespace MotionDetection
 
     public partial class WindowsDetector : Form
     {
-        public Mat CurrentImage;
+        Image<Bgr, byte> currentImage;
 
-        private Capture capture;
+        Image<Bgr, byte> currentImageCopy;
+
+        Capture capture;
         //AdaptiveSkinDetector 
 
         public WindowsDetector()
@@ -38,17 +40,29 @@ namespace MotionDetection
             var yccMin = new Ycc(0, 131, 80);
             var yccMax = new Ycc(255, 185, 135);
 
-            Application.Idle += new EventHandler(FrameCapture);
+            Application.Idle += new EventHandler(this.FrameCapture);
         }
 
-        public void FrameCapture(object sender, EventArgs e)
+        private void FrameCapture(object sender, EventArgs e)
         {
-            this.CurrentImage = this.capture.QueryFrame();
+            this.currentImage = this.capture.QueryFrame().ToImage<Bgr, byte>();
 
-            if (this.CurrentImage != null)
+            if (this.currentImage != null)
             {
-                this._imageToBox.Image = this.CurrentImage;
+                this._imageBox.Image = this.currentImage;
+
+
             }
+
+        }
+
+        private void _imageBox_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void _imageToBox_Click(object sender, EventArgs e)
+        {
 
         }
     }
