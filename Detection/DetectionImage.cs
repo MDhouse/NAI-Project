@@ -9,17 +9,13 @@
 
 namespace Detection
 {
-    using System;
     using System.Drawing;
 
-    using Emgu.Util;
     using Emgu.CV;
-    using Emgu.CV.Cuda;
     using Emgu.CV.CvEnum;
     using Emgu.CV.Structure;
-    using Emgu.CV.Util;
 
-    class DetectionImage:IConvertColor
+    public class DetectionImage : IConvertColor
     {
         private byte[,,] yccBytes;
         private byte[,,] grayBytes;
@@ -49,9 +45,6 @@ namespace Detection
                 
             this.yccBytes = this.ConvertImageToYccImage.Data;
             this.grayBytes = this.CurrentDetectionImage.Data;
-
-            int y, cr, cb, x1, y1, value;
-
 
             for (var i = 0; i < this.Rows; i++)
             {
@@ -83,13 +76,24 @@ namespace Detection
                 }
             }
 
-            this.StructurMat = CvInvoke.GetStructuringElement(Emgu.CV.CvEnum.ElementShape.Cross, new Size(6, 6), new Point(3, 3));
+            this.FirstMat = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(12, 12), new Point(6, 6));
+            this.SecondMat = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(6, 6), new Point(3, 3));
 
-            CvInvoke.Erode(this.CurrentDetectionImage, this.CurrentDetectionImage, this.StructurMat, new Point(1, 1),  1, BorderType.Wrap, CvInvoke.MorphologyDefaultBorderValue);
-            CvInvoke.Dilate(this.CurrentDetectionImage, this.CurrentDetectionImage, this.StructurMat, new Point(1, 1), 2, BorderType.Wrap, CvInvoke.MorphologyDefaultBorderValue);
+            CvInvoke.Erode(this.CurrentDetectionImage, this.CurrentDetectionImage, this.FirstMat, new Point(2, 2), 1, BorderType.Constant, CvInvoke.MorphologyDefaultBorderValue);
+            CvInvoke.Dilate(this.CurrentDetectionImage, this.CurrentDetectionImage, this.SecondMat, new Point(2, 2), 2, BorderType.Constant, CvInvoke.MorphologyDefaultBorderValue);
 
             return this.CurrentDetectionImage;
         }
+
+        /// <summary>
+        /// Gets or sets the second mat.
+        /// </summary>
+        private Mat SecondMat { get; set; }
+
+        /// <summary>
+        /// Gets or sets the first mat.
+        /// </summary>
+        private Mat FirstMat { get; set; }
 
         /// <summary>
         /// Gets or sets the cols.

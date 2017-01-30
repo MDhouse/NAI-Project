@@ -59,32 +59,39 @@
             // 
             // _container.Panel1
             // 
+            this._container.Panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this._container.Panel1.Controls.Add(this._imageBox);
             // 
             // _container.Panel2
             // 
+            this._container.Panel2.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this._container.Panel2.Controls.Add(this._imageToBox);
-            this._container.Size = new System.Drawing.Size(1349, 695);
-            this._container.SplitterDistance = 666;
+            this._container.Size = new System.Drawing.Size(1300, 681);
+            this._container.SplitterDistance = 641;
             this._container.TabIndex = 3;
             // 
             // _imageBox
             // 
+            this._imageBox.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this._imageBox.Dock = System.Windows.Forms.DockStyle.Left;
             this._imageBox.Location = new System.Drawing.Point(0, 0);
             this._imageBox.Name = "_imageBox";
             this._imageBox.Padding = new System.Windows.Forms.Padding(0, 0, 0, 50);
-            this._imageBox.Size = new System.Drawing.Size(650, 695);
+            this._imageBox.Size = new System.Drawing.Size(600, 681);
+            this._imageBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this._imageBox.TabIndex = 2;
             this._imageBox.TabStop = false;
             // 
             // _imageToBox
             // 
+            this._imageToBox.AccessibleRole = System.Windows.Forms.AccessibleRole.TitleBar;
+            this._imageToBox.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this._imageToBox.Dock = System.Windows.Forms.DockStyle.Right;
-            this._imageToBox.Location = new System.Drawing.Point(0, 0);
+            this._imageToBox.Location = new System.Drawing.Point(55, 0);
             this._imageToBox.Name = "_imageToBox";
             this._imageToBox.Padding = new System.Windows.Forms.Padding(0, 0, 0, 50);
-            this._imageToBox.Size = new System.Drawing.Size(650, 695);
+            this._imageToBox.Size = new System.Drawing.Size(600, 681);
+            this._imageToBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this._imageToBox.TabIndex = 2;
             this._imageToBox.TabStop = false;
             // 
@@ -92,7 +99,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1300, 695);
+            this.ClientSize = new System.Drawing.Size(1300, 681);
             this.Controls.Add(this._container);
             this.Name = "WindowsDetector";
             this.Text = "Windows Detection";
