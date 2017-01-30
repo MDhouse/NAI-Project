@@ -89,11 +89,6 @@ namespace MotionDetection
         public int FrameHeight { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of fingers.
-        /// </summary>
-        public int NumberOfFingers { get; set; }
-
-        /// <summary>
         /// Gets or sets the box rect.
         /// </summary>
         public RotatedRect BoxRect { get; set; }
@@ -101,7 +96,12 @@ namespace MotionDetection
         /// <summary>
         /// Gets or sets the defects of point.
         /// </summary>
-        public VectorOfPoint DefectsOfPoint { get; set; }
+        public VectorOfPoint DefectsVectorOfPoint { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of fingers.
+        /// </summary>
+        public int NumberOfFingers { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WindowsDetector"/> class.
@@ -166,14 +166,16 @@ namespace MotionDetection
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public void ShellingCountour(Image<Gray, byte> convertImage)
         {
+            this.DefectsVectorOfPoint = new VectorOfPoint();
+            this.BoxRect = new RotatedRect();
+
             var copyImage = convertImage.Convert<Gray, byte>();
 
             var largeContour = 0;
             double largestArea = 0;
             VectorOfPoint largeContourOfPoint = null;
             VectorOfPoint hullPoint = new VectorOfPoint();
-            RotatedRect box = new RotatedRect();
-
+            VectorOfPoint filtrRedHullPoint = new VectorOfPoint();
 
             using (var contoursOfPoint = new VectorOfVectorOfPoint())
             {
@@ -213,8 +215,10 @@ namespace MotionDetection
 
 
                     ConvexHull(largeContourOfPoint, hullPoint, false, true);
-                    box = MinAreaRect(largeContourOfPoint);
-                    PointF[] points = box.GetVertices();
+                    this.BoxRect = MinAreaRect(largeContourOfPoint);
+                    PointF[] points = this.BoxRect.GetVertices();
+
+                    ConvexityDefects(currentContour, hullPoint, this.DefectsVectorOfPoint);
 
                     Point[] ps = new Point[points.Length];
                     for (var j = 0; j < points.Length; j++)
@@ -223,9 +227,20 @@ namespace MotionDetection
                     }
 
                     this.CurrentImage.DrawPolyline(hullPoint.ToArray(), true, new Bgr(200, 125, 75), 2);
-                    this.CurrentImage.Draw(new CircleF(new PointF(box.Center.X, box.Center.Y), 3), new Bgr(200, 125, 75), 2);
+                    this.CurrentImage.Draw(new CircleF(new PointF(this.BoxRect.Center.X, this.BoxRect.Center.Y), 3), new Bgr(200, 125, 75), 2);
 
-                    ConvexityDefects(largeContourOfPoint, hullPoint, this.DefectsOfPoint);
+                    for (var k = 0; k < hullPoint.Size - 1; k++)
+                    {
+                        var itemX = hullPoint[k].X - hullPoint[k + 1].X;
+                        var itemY = hullPoint[k].Y - hullPoint[k + 1].Y;
+
+                        var result = Math.Sqrt(Math.Pow(itemX, 2) + Math.Pow(itemY, 2));
+
+                        if (result > (this.BoxRect.Size.Width / 10))
+                        {
+                            filtrRedHullPoint.Push(new[] { hullPoint[k] });
+                        }
+                    }
                 }
             }
         }
